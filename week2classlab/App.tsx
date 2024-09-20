@@ -1,16 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { ScrollView, StyleSheet, Text, Image, ActivityIndicator } from 'react-native';
 
 export default function App() {
   return (
     <ScrollView>
       <Text>Text 1</Text>
-      <Text> Text 2</Text>
-      <ActivityIndicator />
-      <Image 
-        source={{ uri: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==" }} 
-        style={styles.tinyLogo}
-      />
+      <Text>text 2</Text>
+      <ActivityIndicator></ActivityIndicator>
+      <Image source={{uri: "https://cdn.vox-cdn.com/thumbor/RvcSv_hd-VrlfPg8Tl_JOfhoIoU=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/19534169/171109_08_11_37_5DS_0545__1_.jpg"}} 
+      style={styles.tinyLogo}
+      ></Image>
     </ScrollView>
   );
 }

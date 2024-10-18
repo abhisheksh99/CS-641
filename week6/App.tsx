@@ -4,6 +4,8 @@ import { StyleSheet, Text, View, Pressable } from 'react-native';
 import RefreshControlExample from './components/RefreshControlExample';
 import VirtualList from './components/VirtualList';
 import FlatListExample from './components/FlatList';
+import SectionListExample from './components/SectionList';
+import ModalExample from './components/Modal';
 
 export default function App() {
   const [displayText, setDisplayText] = useState('Press or long press the button!');
@@ -47,8 +49,15 @@ export default function App() {
         <FlatListExample />
       </View>
       <View>
+        <SectionListExample />
+      </View>
+      <View>
+        <View>
+          <ModalExample />
+        </View>
         <VirtualList />
       </View>
+      
       
     </View>
   );

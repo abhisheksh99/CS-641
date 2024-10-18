@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import RefreshControlExample from './components/RefreshControlExample';
 import VirtualList from './components/VirtualList';
 import FlatListExample from './components/FlatList';
@@ -30,36 +30,43 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <RefreshControlExample />
-      <View style={styles.content}>
+    <ScrollView style={styles.container}>
+      <View style={styles.section}>
+        <RefreshControlExample />
+      </View>
+      
+      <View style={styles.section}>
         <Text>{displayText}</Text>
         <Pressable 
+          style={styles.button}
           onPress={handlePress} 
           onLongPress={handleLongPress}
-          delayLongPress={2000}  // 2000 milliseconds = 2 seconds
+          delayLongPress={2000}
           onHoverIn={handleHoverIn}
           onHoverOut={handleHoverOut}
         >
-          <Text style={isHovered ? { color: 'blue' } : null}>Press Me</Text>
+          <Text style={[styles.buttonText, isHovered && styles.hoveredText]}>Press Me</Text>
         </Pressable>
-        <StatusBar style="auto" />
       </View>
-      <View>
+      
+      <View style={styles.section}>
         <FlatListExample />
       </View>
-      <View>
+      
+      <View style={styles.section}>
         <SectionListExample />
       </View>
-      <View>
-        <View>
-          <ModalExample />
-        </View>
+      
+      <View style={styles.section}>
+        <ModalExample />
+      </View>
+      
+      <View style={styles.section}>
         <VirtualList />
       </View>
       
-      
-    </View>
+      <StatusBar style="auto" />
+    </ScrollView>
   );
 }
 
@@ -68,9 +75,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  section: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
+  hoveredText: {
+    color: 'yellow',
   },
 });

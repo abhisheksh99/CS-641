@@ -33,9 +33,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#333',
   },
-  buttonContainer: {
-    marginVertical: 10,
-  }
+
 });
 
 export default ProfileScreen;

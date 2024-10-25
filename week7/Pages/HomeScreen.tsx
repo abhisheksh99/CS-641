@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
@@ -14,8 +15,8 @@ const HomeScreen = ({ navigation }) => {
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          title="Go to Profile"
-          onPress={() => navigation.navigate('Profile')}
+          title="Open Drawer"
+          onPress={() => navigation.openDrawer()}
           color="#841584"
         />
       </View>

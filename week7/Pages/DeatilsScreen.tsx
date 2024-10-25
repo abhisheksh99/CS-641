@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
@@ -11,8 +12,8 @@ const DetailsScreen = ({ navigation }) => {
         color="#841584"
       />
       <Button
-        title="Go to Profile"
-        onPress={() => navigation.navigate('Profile')}
+        title="Open Drawer"
+        onPress={() => navigation.openDrawer()}
         color="#841584"
       />
     </View>
@@ -32,6 +33,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#333',
+  },
+  buttonContainer: {
+    marginTop: 10,  
+    width: '100%',  
   },
 });
 

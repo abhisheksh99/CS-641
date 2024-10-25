@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
@@ -11,8 +12,8 @@ const ProfileScreen = ({ navigation }) => {
         color="#841584"
       />
       <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Details')}
+        title="Open Drawer"
+        onPress={() => navigation.navigate("Deatils")}
         color="#841584"
       />
     </View>
@@ -33,7 +34,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#333',
   },
-
+  buttonContainer: {
+    marginTop: 10,  
+    width: '100%',  
+  },
 });
 
 export default ProfileScreen;

@@ -6,6 +6,9 @@ import { useEffect, useCallback } from "react";
 import LoginScreen from "./App/Screen/LoginScreen";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
+import { NavigationContainer } from "@react-navigation/native";
+import TabNavigation from "./App/Navigatons/TabNavigation";
+
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -64,7 +67,9 @@ export default function App() {
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
       <View style={styles.container} onLayout={onLayoutRootView}>
         <SignedIn>
-          <Text>You are Signed In</Text>
+          <NavigationContainer>
+            <TabNavigation />
+          </NavigationContainer>
         </SignedIn>
         <SignedOut>
           <LoginScreen />
@@ -79,8 +84,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 25,
-    alignItems: "center",
-    justifyContent: "center",
+
   },
 });

@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     },
     bgImage: {
         width: "100%",
-        height: 240,
+        height: 200,
         marginTop: 20,
         resizeMode: "cover",
     },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   StatusBar,
+  TextInput,
 } from 'react-native';
 
 const DATA = [
@@ -32,6 +33,8 @@ const Item = ({title}: ItemProps) => (
 );
 
 const FlatListExample = () => {
+  const [inputText, setInputText] = useState('');
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>FlatList</Text>
@@ -39,6 +42,12 @@ const FlatListExample = () => {
         data={DATA}
         renderItem={({item}) => <Item title={item.title} />}
         keyExtractor={item => item.id}
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setInputText}
+        value={inputText}
+        placeholder="Enter text here"
       />
     </SafeAreaView>
   );
@@ -63,6 +72,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
   },
 });
 

@@ -1,22 +1,14 @@
-// src/components/HomeScreen.tsx
-import React, { useContext } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import { AuthContext } from '../context/authContext';
+
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+
+import TabNavigator from '../navigation/TabNavigation';
 
 
 const HomeScreen = () => {
-  const authContext = useContext(AuthContext);
-
-  if (!authContext) {
-    return null;
-  }
-
-  const { user, logout } = authContext;
-
-  return (
+    return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome, {user?.displayName}!</Text>
-      <Button title="Logout" onPress={logout} />
+      <TabNavigator />
     </View>
   );
 };
@@ -24,13 +16,14 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+  },
+  header: {
+    backgroundColor: '#6200EE',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
-  welcomeText: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
+
 });
 
 export default HomeScreen;

@@ -14,14 +14,18 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  const login = (email, password) => 
-    signInWithEmailAndPassword(auth, email, password);
+  const login = async (email, password) => {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    setUser(userCredential.user);
+    return userCredential;
+  };
 
   const signup = async (name, email, password) => {
     console.log("Attempting signup with:", email);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, { displayName: name });
+      setUser({...userCredential.user, displayName: name});
       return userCredential;
     } catch (error) {
       throw error;

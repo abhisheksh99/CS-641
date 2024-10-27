@@ -31,7 +31,7 @@ const LoginScreen = () => {
 
     try {
       await login(email, password);
-      navigation.navigate('HomeScreen');
+      navigation.navigate('Home');
     } catch (error) {
       console.error("Login error:", error);
       setError("Login failed. Please check your credentials and try again.");

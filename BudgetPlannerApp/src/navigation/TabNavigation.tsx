@@ -1,11 +1,10 @@
-// src/navigation/TabNavigator.tsx
 import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../context/authContext';
 import IncomeExpenseScreen from '../screens/IncomeExpenseScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-
+import AddExpenseScreen from '../screens/AddExpenseScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,6 +25,8 @@ const TabNavigator = () => {
             iconName = 'home';
           } else if (route.name === 'Profile') {
             iconName = 'person';
+          } else if (route.name === 'Add Expense') {
+            iconName = 'add-circle';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -38,7 +39,6 @@ const TabNavigator = () => {
         name="Home"
         component={IncomeExpenseScreen}
         options={{
-          title: `Welcome, ${user?.displayName || user?.email}!`, // Set dynamic title
           headerStyle: {
             backgroundColor: '#6200EE',
           },
@@ -49,7 +49,36 @@ const TabNavigator = () => {
           },
         }}
       />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profile' }} />
+      <Tab.Screen 
+        name="Add Expense" 
+        component={AddExpenseScreen} 
+        options={{ 
+          headerTitle: 'Add Expense',
+          headerStyle: {
+            backgroundColor: '#6200EE',
+          },
+          headerTitleStyle: {
+            color: '#fff',
+            fontSize: 18,
+            fontWeight: 'bold',
+          },
+        }} 
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen} 
+        options={{ 
+          title: 'Profile',
+          headerStyle: {
+            backgroundColor: '#6200EE',
+          },
+          headerTitleStyle: {
+            color: '#fff',
+            fontSize: 18,
+            fontWeight: 'bold',
+          },
+        }}
+      />
     </Tab.Navigator>
   );
 };

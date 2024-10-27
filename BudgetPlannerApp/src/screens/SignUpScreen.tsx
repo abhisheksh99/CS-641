@@ -13,21 +13,13 @@ const SignUpScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
 
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+
 
   const handleSignup = async () => {
     setError(null); 
 
     if (!name.trim()) {
       setError("Name is required.");
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
       return;
     }
 

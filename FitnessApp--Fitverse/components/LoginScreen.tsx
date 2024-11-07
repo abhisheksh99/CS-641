@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/authContext';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +17,16 @@ const LoginScreen = () => {
       navigation.navigate('HomeTabs');
     } catch (error) {
       console.error('Error logging in:', error.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      navigation.navigate('HomeTabs');
+    } catch (error) {
+      console.error('Error logging in with Google:', error.message);
     }
   };
 
@@ -53,6 +65,16 @@ const LoginScreen = () => {
       >
         <Text className="text-white text-lg font-bold text-center">
           LOGIN
+        </Text>
+      </TouchableOpacity>
+
+      {/* Google Login Button */}
+      <TouchableOpacity 
+        className="w-full bg-blue-500 rounded-2xl py-4 shadow-lg mt-4" 
+        onPress={handleGoogleLogin}
+      >
+        <Text className="text-white text-lg font-bold text-center">
+          LOGIN WITH GOOGLE
         </Text>
       </TouchableOpacity>
 

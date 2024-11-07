@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
 
@@ -38,6 +38,16 @@ const SignUpScreen = () => {
     } catch (error) {
       console.error('Error signing up:', error);
       Alert.alert('Error', error.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      navigation.navigate('HomeTabs');
+    } catch (error) {
+      console.error('Error signing in with Google:', error.message);
     }
   };
 
@@ -117,7 +127,17 @@ const SignUpScreen = () => {
             CREATE ACCOUNT
           </Text>
         </TouchableOpacity>
-        
+
+        {/* Google Login Button */}
+        <TouchableOpacity 
+          className="w-full bg-blue-500 rounded-2xl py-4 shadow-lg mt-4" 
+          onPress={handleGoogleLogin}
+        >
+          <Text className="text-white text-lg font-bold text-center">
+            SIGN UP WITH GOOGLE
+          </Text>
+        </TouchableOpacity>
+
         <View className="flex-row space-x-2 items-center">
           <Text className="text-gray-400 text-base">
             Already have an Account?

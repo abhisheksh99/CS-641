@@ -1,31 +1,42 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, ActivityIndicator, Alert, TouchableOpacity } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import ImageSlider from "../components/ImageSlider";
 import BodyParts from "../components/BodyParts";
 import { useAuth } from "../context/authContext";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc, DocumentData } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebaseConfig";
 
+// Define types for userData
+interface UserData {
+  photoURL?: string;
+  name?: string;
+}
+
 const Home = () => {
-  const { user } = useAuth();
-  const [userData, setUserData] = useState(null);
+  const { user } = useAuth() || {};
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
-    let unsubscribe;
-    if (user?.uid) {
-      const userDocRef = doc(db, 'users', user.uid);
+    let unsubscribe: (() => void) | undefined;
 
-      unsubscribe = onSnapshot(userDocRef, (doc) => {
-        if (doc.exists()) {
-          setUserData(doc.data());
-        }
-        setLoading(false);
-      }, () => setLoading(false));
+    if (user?.uid) {
+      const userDocRef = doc(db, "users", user.uid);
+
+      unsubscribe = onSnapshot(
+        userDocRef,
+        (doc) => {
+          if (doc.exists()) {
+            setUserData(doc.data() as UserData);
+          }
+          setLoading(false);
+        },
+        () => setLoading(false)
+      );
     }
 
     return () => {
@@ -33,17 +44,16 @@ const Home = () => {
     };
   }, [user]);
 
-  const uploadImage = async (uri) => {
+  const uploadImage = async (uri: string) => {
     try {
       setLoading(true);
       const blob = await (await fetch(uri)).blob();
-      const storageRef = ref(storage, `profileImages/${user.uid}_profile.jpg`);
+      const storageRef = ref(storage, `profileImages/${user?.uid}_profile.jpg`);
       await uploadBytes(storageRef, blob);
       const downloadURL = await getDownloadURL(storageRef);
 
-      await updateDoc(doc(db, "users", user.uid), { photoURL: downloadURL });
-
-      setUserData((prevData) => ({ ...prevData, photoURL: downloadURL }));
+      await updateDoc(doc(db, "users", user?.uid), { photoURL: downloadURL });
+      setUserData((prevData) => ({ ...(prevData || {}), photoURL: downloadURL }));
       Alert.alert("Success", "Profile picture updated successfully!");
     } catch (error) {
       Alert.alert("Error", "Failed to update profile picture. Please try again.");
@@ -72,9 +82,9 @@ const Home = () => {
         </View>
 
         {/* Profile Image */}
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
           <Image
-            source={{ uri: userData?.photoURL || 'https://via.placeholder.com/150' }}
+            source={{ uri: userData?.photoURL || "https://via.placeholder.com/150" }}
             className="w-20 h-20 rounded-full border-4 border-rose-500 mt-5"
           />
         </TouchableOpacity>

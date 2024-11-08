@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -13,7 +13,7 @@ const SignUpScreen = () => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [gender, setGender] = useState('');
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<any>>();
 
   const handleSignUp = async () => {
     if (!name || !email || !password || !height || !weight || !gender) {
@@ -34,8 +34,8 @@ const SignUpScreen = () => {
         createdAt: new Date()
       });
       Alert.alert('Success', 'Account created successfully!');
-      navigation.navigate('HomeTabs');
-    } catch (error) {
+      navigation.navigate('HomeTabs' as never);
+    } catch (error: any) { // Cast error to any for accessing .message
       console.error('Error signing up:', error);
       Alert.alert('Error', error.message);
     }
@@ -123,7 +123,7 @@ const SignUpScreen = () => {
             Already have an Account?
           </Text>
           <TouchableOpacity 
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('Login' as never)}
           >
             <Text className="text-rose-500 text-base font-semibold">
               Login

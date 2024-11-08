@@ -27,14 +27,33 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
 
+// Define types for userData and exercise history
+interface UserData {
+  photoURL?: string;
+  name?: string;
+  email?: string;
+  height?: number;
+  weight?: number;
+  gender?: string;
+}
+
+interface Exercise {
+  id: string;
+  name: string;
+  sets: number;
+  reps: number;
+  weight: number;
+  timestamp: Date;
+}
+
 const ProfileScreen = () => {
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuth() || {};
   const navigation = useNavigation();
-  const [userData, setUserData] = useState(null);
-  const [exerciseHistory, setExerciseHistory] = useState([]);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [exerciseHistory, setExerciseHistory] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchDate, setSearchDate] = useState("");
-  const [filteredHistory, setFilteredHistory] = useState([]);
+  const [filteredHistory, setFilteredHistory] = useState<Exercise[]>([]);
 
   useEffect(() => {
     fetchUserData();
@@ -50,7 +69,7 @@ const ProfileScreen = () => {
       try {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
-          setUserData(userDoc.data());
+          setUserData(userDoc.data() as UserData);
         } else {
           console.log("No such document!");
         }
@@ -75,9 +94,9 @@ const ProfileScreen = () => {
             id: doc.id,
             ...doc.data(),
             timestamp: doc.data().timestamp?.toDate(),
-          }));
+          })) as Exercise[];
 
-          historyData.sort((a, b) => b.timestamp - a.timestamp);
+          historyData.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
           setExerciseHistory(historyData);
           setFilteredHistory(historyData);
@@ -90,7 +109,7 @@ const ProfileScreen = () => {
         }
       );
 
-      return unsubscribe; 
+      return unsubscribe;
     }
   };
 
@@ -102,16 +121,14 @@ const ProfileScreen = () => {
 
     const filtered = exerciseHistory.filter((exercise) => {
       if (!exercise.timestamp) return false;
-      const exerciseDate = exercise.timestamp
-        .toLocaleDateString()
-        .toLowerCase();
+      const exerciseDate = exercise.timestamp.toLocaleDateString().toLowerCase();
       return exerciseDate.includes(searchDate.toLowerCase());
     });
 
     setFilteredHistory(filtered);
   };
 
-  const saveExerciseLog = async (exercise) => {
+  const saveExerciseLog = async (exercise: Exercise) => {
     try {
       await addDoc(collection(db, "exerciseLogs"), {
         exerciseId: exercise.id,
@@ -120,7 +137,7 @@ const ProfileScreen = () => {
         reps: exercise.reps,
         weight: exercise.weight,
         timestamp: Timestamp.now(),
-        userEmail: user.email,
+        userEmail: user?.email,
       });
       Alert.alert("Success", "Exercise log saved.");
     } catch (error) {
@@ -179,25 +196,22 @@ const ProfileScreen = () => {
     }
   };
 
-  const uploadImage = async (uri) => {
+  const uploadImage = async (uri: string) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    const filename = user.uid + "_profile.jpg";
+    const filename = user?.uid + "_profile.jpg";
     const storageRef = ref(storage, `profileImages/${filename}`);
 
     try {
       setLoading(true);
       await uploadBytes(storageRef, blob);
       const downloadURL = await getDownloadURL(storageRef);
-      await updateDoc(doc(db, "users", user.uid), { photoURL: downloadURL });
-      setUserData((prevData) => ({ ...prevData, photoURL: downloadURL }));
+      await updateDoc(doc(db, "users", user?.uid), { photoURL: downloadURL });
+      setUserData((prevData) => ({ ...(prevData || {}), photoURL: downloadURL }));
       Alert.alert("Success", "Profile picture updated successfully!");
     } catch (error) {
       console.error("Error uploading image: ", error);
-      Alert.alert(
-        "Error",
-        "Failed to update profile picture. Please try again."
-      );
+      Alert.alert("Error", "Failed to update profile picture. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -220,15 +234,13 @@ const ProfileScreen = () => {
     );
   }
 
-  const InfoItem = ({ label, value, icon }) => (
+  const InfoItem = ({ label, value, icon }: { label: string; value: string | number | undefined; icon: string }) => (
     <View className="flex-row items-center justify-between bg-white p-4 rounded-2xl mb-3 shadow-sm">
       <View className="flex-row items-center">
         <Ionicons name={icon} size={24} color="#E11D48" />
         <Text className="text-gray-600 text-lg ml-3">{label}</Text>
       </View>
-      <Text className="text-gray-800 text-lg font-semibold">
-        {value || "N/A"}
-      </Text>
+      <Text className="text-gray-800 text-lg font-semibold">{value || "N/A"}</Text>
     </View>
   );
 
@@ -270,21 +282,9 @@ const ProfileScreen = () => {
           <Text className="text-lg font-semibold text-gray-800 mb-3 ml-1">
             Personal Information
           </Text>
-          <InfoItem
-            label="Height"
-            value={userData?.height ? `${userData.height} cm` : "N/A"}
-            icon="resize-outline"
-          />
-          <InfoItem
-            label="Weight"
-            value={userData?.weight ? `${userData.weight} kg` : "N/A"}
-            icon="scale-outline"
-          />
-          <InfoItem
-            label="Gender"
-            value={userData?.gender || "N/A"}
-            icon="person-outline"
-          />
+          <InfoItem label="Height" value={userData?.height ? `${userData.height} cm` : "N/A"} icon="resize-outline" />
+          <InfoItem label="Weight" value={userData?.weight ? `${userData.weight} kg` : "N/A"} icon="scale-outline" />
+          <InfoItem label="Gender" value={userData?.gender || "N/A"} icon="person-outline" />
         </View>
 
         {/* Exercise History Section with Search */}
@@ -302,41 +302,29 @@ const ProfileScreen = () => {
               placeholderTextColor="#9CA3AF"
               value={searchDate}
               onChangeText={setSearchDate}
-              style={{ outline: "none" }}
+              style={{ borderBottomWidth: 1, borderColor: "#9CA3AF" }}
             />
             {searchDate !== "" && (
-              <TouchableOpacity
-                onPress={() => setSearchDate("")}
-                className="ml-2"
-              >
+              <TouchableOpacity onPress={() => setSearchDate("")} className="ml-2">
                 <Ionicons name="close-circle" size={20} color="#6B7280" />
               </TouchableOpacity>
             )}
           </View>
           {filteredHistory.length === 0 ? (
-            <Text className="text-gray-500 text-center">
-              No exercise history found.
-            </Text>
+            <Text className="text-gray-500 text-center">No exercise history found.</Text>
           ) : (
             filteredHistory.map((exercise) => (
-              <View
-                key={exercise.id}
-                className="bg-white p-5 rounded-2xl mb-4 shadow-md border border-gray-100"
-              >
+              <View key={exercise.id} className="bg-white p-5 rounded-2xl mb-4 shadow-md border border-gray-100">
                 <View className="flex-row items-center mb-2">
                   <Ionicons name="barbell-outline" size={20} color="#E11D48" />
-                  <Text className="text-lg font-semibold text-gray-800 ml-2 uppercase">
-                    {exercise.name}
-                  </Text>
+                  <Text className="text-lg font-semibold text-gray-800 ml-2 uppercase">{exercise.name}</Text>
                 </View>
 
                 {/* Date Row */}
                 <View className="flex-row items-center mb-3">
                   <Ionicons name="calendar-outline" size={16} color="#E11D48" />
                   <Text className="text-gray-600 ml-2 font-medium">Date:</Text>
-                  <Text className="text-gray-800 ml-1">
-                    {exercise.timestamp?.toLocaleDateString() || "N/A"}
-                  </Text>
+                  <Text className="text-gray-800 ml-1">{exercise.timestamp?.toLocaleDateString() || "N/A"}</Text>
                 </View>
 
                 {/* Details Section */}
@@ -351,11 +339,7 @@ const ProfileScreen = () => {
 
                   {/* Reps */}
                   <View className="bg-gray-50 rounded-xl px-4 py-2 mr-2 mb-2 flex-row items-center">
-                    <Ionicons
-                      name="refresh-outline"
-                      size={16}
-                      color="#6B7280"
-                    />
+                    <Ionicons name="refresh-outline" size={16} color="#6B7280" />
                     <Text className="text-gray-600 ml-2">
                       <Text className="font-medium">Reps:</Text> {exercise.reps}
                     </Text>
@@ -363,14 +347,9 @@ const ProfileScreen = () => {
 
                   {/* Weight */}
                   <View className="bg-gray-50 rounded-xl px-4 py-2 mb-2 flex-row items-center">
-                    <Ionicons
-                      name="speedometer-outline"
-                      size={16}
-                      color="#6B7280"
-                    />
+                    <Ionicons name="speedometer-outline" size={16} color="#6B7280" />
                     <Text className="text-gray-600 ml-2">
-                      <Text className="font-medium">Weight:</Text>{" "}
-                      {exercise.weight} kg
+                      <Text className="font-medium">Weight:</Text> {exercise.weight} kg
                     </Text>
                   </View>
                 </View>
@@ -385,15 +364,8 @@ const ProfileScreen = () => {
           onPress={handleLogout}
         >
           <View className="flex-row justify-center items-center">
-            <Ionicons
-              name="log-out-outline"
-              size={24}
-              color="white"
-              className="mr-2"
-            />
-            <Text className="text-white text-lg font-semibold ml-2">
-              Logout
-            </Text>
+            <Ionicons name="log-out-outline" size={24} color="white" className="mr-2" />
+            <Text className="text-white text-lg font-semibold ml-2">Logout</Text>
           </View>
         </TouchableOpacity>
       </View>

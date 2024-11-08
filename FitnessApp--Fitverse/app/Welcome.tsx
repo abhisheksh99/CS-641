@@ -8,13 +8,13 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 const Welcome = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const navigation = useNavigation();
-  const { user } = useAuth();
+  const { user } = useAuth() || {};
 
   const handleGetStarted = () => {
     if (user) {
-      navigation.navigate('HomeTabs');
+      navigation.navigate('HomeTabs' as never);
     } else {
-      navigation.navigate('Login');
+      navigation.navigate('Login' as never);
     }
   };
 

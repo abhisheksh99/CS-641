@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useAuth } from '../context/authContext';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
-  const navigation = useNavigation();
+  const { login } = useAuth() || {};  // Use fallback to handle potential null
+  const navigation = useNavigation<NavigationProp<any>>();
 
   const handleLogin = async () => {
     try {
       await login(email, password);
-      navigation.navigate('HomeTabs');
-    } catch (error) {
+      navigation.navigate('HomeTabs' as never);
+    } catch (error: any) {  // Cast error to any to access .message
       console.error('Error logging in:', error.message);
     }
   };
@@ -61,7 +61,7 @@ const LoginScreen = () => {
           Don't have an Account?
         </Text>
         <TouchableOpacity 
-          onPress={() => navigation.navigate('SignUp')}
+          onPress={() => navigation.navigate('SignUp' as never)}
         >
           <Text className="text-rose-500 text-base font-semibold">
             Sign Up

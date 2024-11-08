@@ -2,10 +2,21 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { widthPercentageToDP as wp, heightPercentageToDP } from "react-native-responsive-screen";
 import { Image } from "expo-image";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
-const ExerciseList = ({ data }) => {
+// Define types for data prop and individual exercise items
+interface ExerciseItem {
+  id: string;
+  name: string;
+  gifUrl: string;
+}
+
+interface ExerciseListProps {
+  data: ExerciseItem[];
+}
+
+const ExerciseList: React.FC<ExerciseListProps> = ({ data }) => {
   return (
     <View className="flex-1 px-4 py-3 space-y-4">
       {data.map((item, index) => (
@@ -15,12 +26,17 @@ const ExerciseList = ({ data }) => {
   );
 };
 
-const ExerciseCard = ({ item, index }) => {
-  const navigation = useNavigation();
+interface ExerciseCardProps {
+  item: ExerciseItem;
+  index: number;
+}
+
+const ExerciseCard: React.FC<ExerciseCardProps> = ({ item, index }) => {
+  const navigation = useNavigation<NavigationProp<any>>();
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("ExerciseDetails", { item })}
+      onPress={() => navigation.navigate("ExerciseDetails" as never, { item } as never)}
       className="flex-row items-center bg-white rounded-lg shadow-md p-4 mb-4"
     >
       <Animated.View

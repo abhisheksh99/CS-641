@@ -16,13 +16,17 @@ const BMICalculator = () => {
     weightUnit: "kg",
   });
 
-  const [result, setResult] = useState({
+  const [result, setResult] = useState<{
+    bmi: number | null;
+    category: string;
+    advice: string;
+  }>({
     bmi: null,
     category: "",
     advice: "",
   });
 
-  const getBMICategory = (bmi) => {
+  const getBMICategory = (bmi: number) => {
     if (bmi < 18.5)
       return {
         category: "Underweight",
@@ -78,7 +82,7 @@ const BMICalculator = () => {
     });
   };
 
-  const updateFormData = (field, value) => {
+  const updateFormData = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -162,7 +166,7 @@ const BMICalculator = () => {
             </Text>
           </TouchableOpacity>
 
-          {result.bmi && (
+          {result.bmi !== null && (
             <View className="mt-8 p-6 bg-rose-50 rounded-2xl border border-rose-100">
               <Text className="text-2xl font-bold text-rose-600 text-center mb-3">
                 Your BMI: {result.bmi.toFixed(1)}

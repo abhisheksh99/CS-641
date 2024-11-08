@@ -14,7 +14,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, RouteProp } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
   FadeIn,
@@ -26,9 +26,20 @@ import { db } from "../firebaseConfig";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { useAuth } from "../context/authContext";
 
-const ExerciseDetails = ({ route }) => {
+// Define types for route and InfoSection props
+interface ExerciseDetailsRouteProps {
+  route: RouteProp<{ params: { item: { id: string; name: string; gifUrl: string; equipment: string; target: string; secondaryMuscles: string[] } } }, "params">;
+}
+
+interface InfoSectionProps {
+  title: string;
+  data: string | string[];
+  delay: number;
+}
+
+const ExerciseDetails: React.FC<ExerciseDetailsRouteProps> = ({ route }) => {
   const { item } = route.params;
-  const { user } = useAuth();
+  const { user } = useAuth() || {};
   const [modalVisible, setModalVisible] = useState(true);
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
@@ -42,7 +53,6 @@ const ExerciseDetails = ({ route }) => {
     }, 300);
   };
 
-  // Updated saveTrackingData function with proper user email handling
   const saveTrackingData = async () => {
     if (!sets || !reps || !weight) {
       Alert.alert("Incomplete Data", "Please fill in all tracking fields.");
@@ -62,11 +72,11 @@ const ExerciseDetails = ({ route }) => {
         reps: Number(reps),
         weight: Number(weight),
         timestamp: Timestamp.now(),
-        userEmail: user.email || 'unknown', // Ensure email is captured or marked as unknown
-        userId: user.uid, // Adding user ID as additional identifier
+        userEmail: user.email || 'unknown',
+        userId: user.uid,
       };
 
-      console.log('Saving exercise log with user data:', logData); // Debug log
+      console.log('Saving exercise log with user data:', logData);
 
       await addDoc(collection(db, "exerciseLogs"), logData);
       Alert.alert("Success", "Your exercise data has been saved.");
@@ -76,7 +86,7 @@ const ExerciseDetails = ({ route }) => {
     }
   };
 
-  const InfoSection = ({ title, data, delay }) => (
+  const InfoSection: React.FC<InfoSectionProps> = ({ title, data, delay }) => (
     <Animated.View
       entering={FadeInDown.delay(delay).duration(500)}
       className="mb-4"
@@ -113,9 +123,7 @@ const ExerciseDetails = ({ route }) => {
       onRequestClose={closeModal}
     >
       <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <Animated.View
             entering={FadeInUp.duration(500)}
             className="bg-white rounded-3xl shadow-lg"
@@ -169,27 +177,13 @@ const ExerciseDetails = ({ route }) => {
                   className="h-1 w-20 bg-fuchsia-600 mb-4"
                 />
 
-                <InfoSection
-                  title="Equipment"
-                  data={item.equipment}
-                  delay={800}
-                />
-                <InfoSection
-                  title="Target Muscle"
-                  data={item.target}
-                  delay={1000}
-                />
-                <InfoSection
-                  title="Secondary Muscles"
-                  data={item.secondaryMuscles}
-                  delay={1200}
-                />
+                <InfoSection title="Equipment" data={item.equipment} delay={800} />
+                <InfoSection title="Target Muscle" data={item.target} delay={1000} />
+                <InfoSection title="Secondary Muscles" data={item.secondaryMuscles} delay={1200} />
 
                 {/* Tracking Inputs */}
                 <View className="mb-6">
-                  <Text className="text-lg font-semibold mb-2 text-gray-700">
-                    Track Your Progress:
-                  </Text>
+                  <Text className="text-lg font-semibold mb-2 text-gray-700">Track Your Progress:</Text>
                   <TextInput
                     placeholder="Sets"
                     keyboardType="numeric"
@@ -215,9 +209,7 @@ const ExerciseDetails = ({ route }) => {
                     onPress={saveTrackingData}
                     className="py-2 bg-indigo-500 rounded-full"
                   >
-                    <Text className="text-center text-white font-bold">
-                      Save Tracking Data
-                    </Text>
+                    <Text className="text-center text-white font-bold">Save Tracking Data</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -229,9 +221,7 @@ const ExerciseDetails = ({ route }) => {
                     onPress={closeModal}
                     className="bg-fuchsia-600 rounded-full py-3 px-6 mt-6"
                   >
-                    <Text className="text-white text-center font-semibold text-lg">
-                      Close
-                    </Text>
+                    <Text className="text-white text-center font-semibold text-lg">Close</Text>
                   </TouchableOpacity>
                 </Animated.View>
               </View>

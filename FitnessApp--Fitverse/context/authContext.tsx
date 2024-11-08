@@ -1,12 +1,33 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
 
-const AuthContext = createContext(null);
+interface UserProfile {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  height?: string;
+  weight?: string;
+  gender?: string;
+}
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+interface AuthContextProps {
+  user: UserProfile | null;
+  login: (email: string, password: string) => Promise<any>;
+  signup: (email: string, password: string, name: string, height: string, weight: string, gender: string) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+// Use a default empty object with type assertions for initial context value
+const AuthContext = createContext<AuthContextProps | null>(null);
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -28,9 +49,9 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
+  const login = (email: string, password: string) => signInWithEmailAndPassword(auth, email, password);
 
-  const signup = async (email, password, name, height, weight, gender) => {
+  const signup = async (email: string, password: string, name: string, height: string, weight: string, gender: string) => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       if (result.user) {
@@ -70,4 +91,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext) as AuthContextProps;

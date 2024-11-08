@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { fetchExercisesByBodyPart } from "../api/excerciseDb";
 import { StatusBar } from "expo-status-bar";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
@@ -8,12 +8,21 @@ import { bodyParts } from "../constants";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ExerciseList from "../components/ExcerciseList";
 
+// Define the type for route params
+type ExerciseRouteParams = {
+  params: {
+    item: {
+      name: string;
+      id?: string; 
+    };
+  };
+};
 
 const Exercise = () => {
   const navigation = useNavigation();
-  const route = useRoute();
+  const route = useRoute<RouteProp<ExerciseRouteParams, "params">>();
   const { item } = route.params;
-  const [exercises, setExercises] = useState([]);
+  const [exercises, setExercises] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
     if (item) {
@@ -21,8 +30,8 @@ const Exercise = () => {
     }
   }, [item]);
 
-  const getExercises = async (bodyPart) => {
-    let data = await fetchExercisesByBodyPart(bodyPart);
+  const getExercises = async (bodyPart: string) => {
+    const data = await fetchExercisesByBodyPart(bodyPart);
     console.log(data);
     setExercises(data);
   };
@@ -53,7 +62,7 @@ const Exercise = () => {
           shadowRadius: 3.5,
           elevation: 5,
         }}
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.navigate("Home" as never)} // casting to `never` to satisfy TypeScript
       >
         <Ionicons name="chevron-back-outline" size={hp(4)} color="white" />
       </TouchableOpacity>
@@ -71,13 +80,12 @@ const Exercise = () => {
         </Text>
       </View>
 
-      
       <FlatList
         data={exercises}
         keyExtractor={(exercise) => exercise.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50, paddingTop: 20 }}
-        renderItem={({ item }) => <ExerciseList data={[item]} />} 
+        renderItem={({ item }) => <ExerciseList data={[item]} />}
       />
     </View>
   );

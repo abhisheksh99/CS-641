@@ -2,6 +2,7 @@
   "expo": {
     "name": "Todo-Clerk",
     "slug": "Todo-Clerk",
+    "scheme": "Todo-Clerk",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

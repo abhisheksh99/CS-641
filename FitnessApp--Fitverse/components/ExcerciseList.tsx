@@ -16,7 +16,7 @@ interface ExerciseListProps {
   data: ExerciseItem[];
 }
 
-const ExerciseList: React.FC<ExerciseListProps> = ({ data }) => {
+const ExerciseList = ({ data }: ExerciseListProps) => {
   return (
     <View className="flex-1 px-4 py-3 space-y-4">
       {data.map((item, index) => (
@@ -31,7 +31,7 @@ interface ExerciseCardProps {
   index: number;
 }
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({ item, index }) => {
+const ExerciseCard = ({ item, index }: ExerciseCardProps) => {
   const navigation = useNavigation<NavigationProp<any>>();
 
   return (

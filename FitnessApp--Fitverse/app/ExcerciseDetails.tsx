@@ -37,7 +37,7 @@ interface InfoSectionProps {
   delay: number;
 }
 
-const ExerciseDetails: React.FC<ExerciseDetailsRouteProps> = ({ route }) => {
+const ExerciseDetails = ({ route }: ExerciseDetailsRouteProps) => {
   const { item } = route.params;
   const { user } = useAuth() || {};
   const [modalVisible, setModalVisible] = useState(true);
@@ -86,7 +86,7 @@ const ExerciseDetails: React.FC<ExerciseDetailsRouteProps> = ({ route }) => {
     }
   };
 
-  const InfoSection: React.FC<InfoSectionProps> = ({ title, data, delay }) => (
+  const InfoSection = ({ title, data, delay }: InfoSectionProps) => (
     <Animated.View
       entering={FadeInDown.delay(delay).duration(500)}
       className="mb-4"

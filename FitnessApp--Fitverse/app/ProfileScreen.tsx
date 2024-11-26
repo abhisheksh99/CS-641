@@ -128,23 +128,6 @@ const ProfileScreen = () => {
     setFilteredHistory(filtered);
   };
 
-  const saveExerciseLog = async (exercise: Exercise) => {
-    try {
-      await addDoc(collection(db, "exerciseLogs"), {
-        exerciseId: exercise.id,
-        name: exercise.name,
-        sets: exercise.sets,
-        reps: exercise.reps,
-        weight: exercise.weight,
-        timestamp: Timestamp.now(),
-        userEmail: user?.email,
-      });
-      Alert.alert("Success", "Exercise log saved.");
-    } catch (error) {
-      console.error("Error saving exercise log:", error);
-      Alert.alert("Error", "Failed to save exercise log.");
-    }
-  };
 
   const handleImagePick = async () => {
     Alert.alert(

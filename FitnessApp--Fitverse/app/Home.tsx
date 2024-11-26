@@ -44,23 +44,6 @@ const Home = () => {
     };
   }, [user]);
 
-  const uploadImage = async (uri: string) => {
-    try {
-      setLoading(true);
-      const blob = await (await fetch(uri)).blob();
-      const storageRef = ref(storage, `profileImages/${user?.uid}_profile.jpg`);
-      await uploadBytes(storageRef, blob);
-      const downloadURL = await getDownloadURL(storageRef);
-
-      await updateDoc(doc(db, "users", user?.uid), { photoURL: downloadURL });
-      setUserData((prevData) => ({ ...(prevData || {}), photoURL: downloadURL }));
-      Alert.alert("Success", "Profile picture updated successfully!");
-    } catch (error) {
-      Alert.alert("Error", "Failed to update profile picture. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (

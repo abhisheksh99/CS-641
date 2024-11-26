@@ -5,12 +5,11 @@ const baseUrl = "https://excercisedb.p.rapidapi.com";
 
 
 // Generic function to make API calls
-const apiCall = async (url, params) => {
+const apiCall = async (url) => {
     try {
         const options = {
             method: "GET",
             url,
-            params,
             headers: {
                 'x-rapidapi-key': API_KEY, 
                 'x-rapidapi-host': 'exercisedb.p.rapidapi.com'

@@ -16,19 +16,27 @@ import {
 } from "react-native-responsive-screen";
 import { useNavigation, RouteProp } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import Animated, {
-  FadeIn,
-  FadeInDown,
-  FadeInUp,
-} from "react-native-reanimated";
 import Timer from "../components/Timer";
 import { db } from "../firebaseConfig";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { useAuth } from "../context/authContext";
 
-// Define types for route and InfoSection props
 interface ExerciseDetailsRouteProps {
-  route: RouteProp<{ params: { item: { id: string; name: string; gifUrl: string; equipment: string; target: string; secondaryMuscles: string[] } } }, "params">;
+  route: RouteProp<
+    {
+      params: {
+        item: {
+          id: string;
+          name: string;
+          gifUrl: string;
+          equipment: string;
+          target: string;
+          secondaryMuscles: string[];
+        };
+      };
+    },
+    "params"
+  >;
 }
 
 interface InfoSectionProps {
@@ -58,12 +66,10 @@ const ExerciseDetails = ({ route }: ExerciseDetailsRouteProps) => {
       Alert.alert("Incomplete Data", "Please fill in all tracking fields.");
       return;
     }
-
     if (!user) {
       Alert.alert("Error", "User not logged in");
       return;
     }
-
     try {
       const logData = {
         exerciseId: item.id,
@@ -72,12 +78,10 @@ const ExerciseDetails = ({ route }: ExerciseDetailsRouteProps) => {
         reps: Number(reps),
         weight: Number(weight),
         timestamp: Timestamp.now(),
-        userEmail: user.email || 'unknown',
+        userEmail: user.email || "unknown",
         userId: user.uid,
       };
-
-      console.log('Saving exercise log with user data:', logData);
-
+      console.log("Saving exercise log with user data:", logData);
       await addDoc(collection(db, "exerciseLogs"), logData);
       Alert.alert("Success", "Your exercise data has been saved.");
     } catch (error) {
@@ -87,32 +91,25 @@ const ExerciseDetails = ({ route }: ExerciseDetailsRouteProps) => {
   };
 
   const InfoSection = ({ title, data, delay }: InfoSectionProps) => (
-    <Animated.View
-      entering={FadeInDown.delay(delay).duration(500)}
-      className="mb-4"
-    >
+    <View className="mb-4">
       <Text className="text-lg font-semibold text-gray-700 mb-2">{title}:</Text>
       <View className="flex-row flex-wrap">
         {Array.isArray(data) ? (
           data.map((item, index) => (
-            <Animated.View
+            <View
               key={index}
-              entering={FadeIn.delay(delay + 100 + index * 50).duration(300)}
               className="bg-fuchsia-100 rounded-full px-3 py-1 mr-2 mb-2"
             >
               <Text className="text-fuchsia-700">{item}</Text>
-            </Animated.View>
+            </View>
           ))
         ) : (
-          <Animated.View
-            entering={FadeIn.delay(delay + 100).duration(300)}
-            className="bg-fuchsia-100 rounded-full px-3 py-1 mr-2 mb-2"
-          >
+          <View className="bg-fuchsia-100 rounded-full px-3 py-1 mr-2 mb-2">
             <Text className="text-fuchsia-700">{data}</Text>
-          </Animated.View>
+          </View>
         )}
       </View>
-    </Animated.View>
+    </View>
   );
 
   return (
@@ -123,24 +120,24 @@ const ExerciseDetails = ({ route }: ExerciseDetailsRouteProps) => {
       onRequestClose={closeModal}
     >
       <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <Animated.View
-            entering={FadeInUp.duration(500)}
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <View
             className="bg-white rounded-3xl shadow-lg"
             style={{ width: wp(90), maxHeight: hp(80) }}
           >
             <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
               <View className="relative">
-                <Animated.View entering={FadeIn.delay(300).duration(500)}>
+                <View>
                   <Image
                     source={{ uri: item.gifUrl }}
                     contentFit="cover"
                     style={{ width: wp(90), height: hp(40) }}
                     className="rounded-t-3xl"
                   />
-                </Animated.View>
-                <Animated.View
-                  entering={FadeIn.delay(500).duration(300)}
+                </View>
+                <View
                   style={{
                     position: "absolute",
                     top: 16,
@@ -158,11 +155,10 @@ const ExerciseDetails = ({ route }: ExerciseDetailsRouteProps) => {
                   >
                     <Ionicons name="close" size={24} color="black" />
                   </TouchableOpacity>
-                </Animated.View>
+                </View>
               </View>
               <View className="p-6">
-                <Animated.Text
-                  entering={FadeInDown.delay(600).duration(500)}
+                <Text
                   className="text-3xl font-extrabold mb-3 text-gray-800 tracking-wide text-center uppercase"
                   style={{
                     textShadowColor: "rgba(0, 0, 0, 1)",
@@ -171,19 +167,27 @@ const ExerciseDetails = ({ route }: ExerciseDetailsRouteProps) => {
                   }}
                 >
                   {item.name}
-                </Animated.Text>
-                <Animated.View
-                  entering={FadeIn.delay(700).duration(300)}
-                  className="h-1 w-20 bg-fuchsia-600 mb-4"
+                </Text>
+                <View className="h-1 w-20 bg-fuchsia-600 mb-4" />
+                <InfoSection
+                  title="Equipment"
+                  data={item.equipment}
+                  delay={800}
                 />
-
-                <InfoSection title="Equipment" data={item.equipment} delay={800} />
-                <InfoSection title="Target Muscle" data={item.target} delay={1000} />
-                <InfoSection title="Secondary Muscles" data={item.secondaryMuscles} delay={1200} />
-
-                {/* Tracking Inputs */}
+                <InfoSection
+                  title="Target Muscle"
+                  data={item.target}
+                  delay={1000}
+                />
+                <InfoSection
+                  title="Secondary Muscles"
+                  data={item.secondaryMuscles}
+                  delay={1200}
+                />
                 <View className="mb-6">
-                  <Text className="text-lg font-semibold mb-2 text-gray-700">Track Your Progress:</Text>
+                  <Text className="text-lg font-semibold mb-2 text-gray-700">
+                    Track Your Progress:
+                  </Text>
                   <TextInput
                     placeholder="Sets"
                     keyboardType="numeric"
@@ -209,24 +213,25 @@ const ExerciseDetails = ({ route }: ExerciseDetailsRouteProps) => {
                     onPress={saveTrackingData}
                     className="py-2 bg-indigo-500 rounded-full"
                   >
-                    <Text className="text-center text-white font-bold">Save Tracking Data</Text>
+                    <Text className="text-center text-white font-bold">
+                      Save Tracking Data
+                    </Text>
                   </TouchableOpacity>
                 </View>
-
-                {/* Timer Integration */}
                 <Timer onTimerComplete={saveTrackingData} />
-
-                <Animated.View entering={FadeInUp.delay(1800).duration(500)}>
+                <View>
                   <TouchableOpacity
                     onPress={closeModal}
                     className="bg-fuchsia-600 rounded-full py-3 px-6 mt-6"
                   >
-                    <Text className="text-white text-center font-semibold text-lg">Close</Text>
+                    <Text className="text-white text-center font-semibold text-lg">
+                      Close
+                    </Text>
                   </TouchableOpacity>
-                </Animated.View>
+                </View>
               </View>
             </ScrollView>
-          </Animated.View>
+          </View>
         </View>
       </SafeAreaView>
     </Modal>

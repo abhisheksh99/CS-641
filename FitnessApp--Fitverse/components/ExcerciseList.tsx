@@ -5,7 +5,7 @@ import { Image } from "expo-image";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
-// Define types for data prop and individual exercise items
+
 interface ExerciseItem {
   id: string;
   name: string;
@@ -36,7 +36,7 @@ const ExerciseCard = ({ item, index }: ExerciseCardProps) => {
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("ExerciseDetails" as never, { item } as never)}
+      onPress={() => navigation.navigate("ExerciseDetails" , { item } )}
       className="flex-row items-center bg-white rounded-lg shadow-md p-4 mb-4"
     >
       <Animated.View

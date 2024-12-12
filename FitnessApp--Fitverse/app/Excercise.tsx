@@ -8,7 +8,7 @@ import { bodyParts } from "../constants";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ExerciseList from "../components/ExcerciseList";
 
-// Define the type for route params
+
 type ExerciseRouteParams = {
   params: {
     item: {
@@ -62,7 +62,7 @@ const Exercise = () => {
           shadowRadius: 3.5,
           elevation: 5,
         }}
-        onPress={() => navigation.navigate("Home" as never)} // casting to `never` to satisfy TypeScript
+        onPress={() => navigation.navigate("Home" as never)} 
       >
         <Ionicons name="chevron-back-outline" size={hp(4)} color="white" />
       </TouchableOpacity>

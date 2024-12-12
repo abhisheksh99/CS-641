@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (result.user) {
         await updateProfile(result.user, { displayName: name });
         
-        // Store additional user data in Firestore
+        
         await setDoc(doc(db, 'users', result.user.uid), {
           name,
           email,

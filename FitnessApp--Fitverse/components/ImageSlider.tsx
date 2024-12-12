@@ -32,7 +32,7 @@ const ImageSlider = () => {
       itemWidth={wp(100) - 70}
       loop={true}
       autoplay={true}
-      autoplayInterval={4000}
+      autoplayInterval={3000}
       firstItem={1}
     />
   );

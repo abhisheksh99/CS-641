@@ -1,13 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ActivityIndicator, Alert, TouchableOpacity } from "react-native";
+import { View, Text, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import ImageSlider from "../components/ImageSlider";
 import BodyParts from "../components/BodyParts";
 import { useAuth } from "../context/authContext";
-import { doc, onSnapshot, updateDoc, DocumentData } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "../firebaseConfig";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db} from "../firebaseConfig";
 
 // Define types for userData
 interface UserData {
@@ -33,9 +32,9 @@ const Home = () => {
           if (doc.exists()) {
             setUserData(doc.data() as UserData);
           }
-          setLoading(false);
+          setLoading(false); // Stop loading when data is successfully fetched.
         },
-        () => setLoading(false)
+        () => setLoading(false) // Stop loading if an error occurs.
       );
     }
 

@@ -347,7 +347,7 @@ const ProfileScreen = () => {
           onPress={handleLogout}
         >
           <View className="flex-row justify-center items-center">
-            <Ionicons name="log-out-outline" size={24} color="white" className="mr-2" />
+            <Ionicons name="log-out-outline" size={24} color="white"  />
             <Text className="text-white text-lg font-semibold ml-2">Logout</Text>
           </View>
         </TouchableOpacity>

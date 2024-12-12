@@ -27,6 +27,8 @@ const apiCall = async (url) => {
 
 // Function to fetch exercises by body part
 export const fetchExercisesByBodyPart = async (bodyPart) => {
-    const data = await apiCall(`${baseUrl}/exercises/bodyPart/${bodyPart}`); // Fixed endpoint
+    const data = await apiCall(`${baseUrl}/exercises/bodyPart/${bodyPart}`); 
+    console.log(data);
+    
     return data; // Return the fetched data
 };

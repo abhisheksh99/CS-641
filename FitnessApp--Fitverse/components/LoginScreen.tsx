@@ -6,14 +6,14 @@ import { useAuth } from '../context/authContext';
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth() || {};  // Use fallback to handle potential null
+  const { login } = useAuth() || {};  
   const navigation = useNavigation<NavigationProp<any>>();
 
   const handleLogin = async () => {
     try {
       await login(email, password);
       navigation.navigate('HomeTabs' as never);
-    } catch (error: any) {  // Cast error to any to access .message
+    } catch (error: any) {  
       console.error('Error logging in:', error.message);
     }
   };

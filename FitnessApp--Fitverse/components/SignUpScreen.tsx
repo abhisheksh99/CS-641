@@ -35,7 +35,7 @@ const SignUpScreen = () => {
       });
       Alert.alert('Success', 'Account created successfully!');
       navigation.navigate('HomeTabs' as never);
-    } catch (error: any) { // Cast error to any for accessing .message
+    } catch (error: any) { 
       console.error('Error signing up:', error);
       Alert.alert('Error', error.message);
     }
